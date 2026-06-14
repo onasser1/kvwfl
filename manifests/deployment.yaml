@@ -16,7 +16,7 @@ spec:
         app: validating-kontroller
     spec:
       containers:
-      - image: onasserr/validating-kontroller:0.1.0
+      - image: onasserr/validating-kontroller:small
         name: validating-kontroller
         args:
           - --tls-cert-file=/var/run/webhook/certs/tls.crt
