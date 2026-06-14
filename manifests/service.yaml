@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: validating-kontroller
+  name: validating-kontroller
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8443
+  selector:
+    app: validating-kontroller
+  type: ClusterIP
+status:
+  loadBalancer: {}

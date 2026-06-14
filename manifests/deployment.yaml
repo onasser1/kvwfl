@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: validating-kontroller
+  name: validating-kontroller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: validating-kontroller
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: validating-kontroller
+    spec:
+      containers:
+      - image: onasserr/validating-kontroller:0.1.0
+        name: validating-kontroller
+        args:
+          - --tls-cert-file=/var/run/webhook/certs/tls.crt
+          - --tls-private-key-file=/var/run/webhook/certs/tls.key
+          - --v=4
+        resources: {}
+        volumeMounts:
+          - name: certs
+            mountPath: /var/run/webhook/certs
+      
+      volumes:
+        - name: certs
+          secret:
+            secretName: certs
+status: {}
