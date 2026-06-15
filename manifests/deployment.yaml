@@ -16,8 +16,9 @@ spec:
         app: validating-kontroller
     spec:
       containers:
-      - image: onasserr/validating-kontroller:small
+      - image: onasserr/validating-kontroller:v1
         name: validating-kontroller
+        imagePullPolicy: Always
         args:
           - --tls-cert-file=/var/run/webhook/certs/tls.crt
           - --tls-private-key-file=/var/run/webhook/certs/tls.key
