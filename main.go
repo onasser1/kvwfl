@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -75,12 +76,12 @@ func ServeValidationAdmission(w http.ResponseWriter, r *http.Request) {
 	klog.Infof("Logger Resource we got is: %v", Logger)
 
 	AdmissionResponse := admissionv1beta1.AdmissionResponse{}
-	if allowed := ValidateLogger(); !allowed {
+	if allowed := ValidateLogger(&Logger); !allowed {
 		AdmissionResponse = admissionv1beta1.AdmissionResponse{
 			UID:     AdmissionReview.Request.UID,
 			Allowed: allowed,
 			Result: &v1.Status{
-				Message: "Not Allowed, currently we are rejecting all Logger requests through the webhook",
+				Message: "Not Allowed",
 			},
 		}
 	} else {
@@ -89,10 +90,28 @@ func ServeValidationAdmission(w http.ResponseWriter, r *http.Request) {
 			Allowed: allowed,
 		}
 	}
-	klog.Infof("AdmissionResponse that is being sent: %v", AdmissionResponse)
+	klog.Infof("AdmissionResponse Allowed? : %v", AdmissionResponse.Allowed)
+	AdmissionReview.Response = &AdmissionResponse
+
+	response, err := json.Marshal(AdmissionReview)
+	if err != nil {
+		klog.Fatalf("error marshaling AdmissionReview back to JSON: %v", err)
+	}
+	if _, err = w.Write(response); err != nil {
+		klog.Fatalf("error writing AdmissionReview reponse: %v", err)
+	}
 }
 
-// ValidateLogger currently rejects all requests for Logger
-func ValidateLogger() bool {
-	return false
+// ValidateLogger currently returns boolean result
+// we can return a status message with the reason
+// to be used within AdmissionReview.Result
+func ValidateLogger(l *logger.Logger) bool {
+	labels := l.GetLabels()
+	if labels == nil {
+		return true
+	}
+	if labels["system"] == "kube" || labels["env"] == "production" {
+		return false
+	}
+	return true
 }
