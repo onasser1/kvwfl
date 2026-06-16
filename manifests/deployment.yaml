@@ -16,7 +16,7 @@ spec:
         app: validating-kontroller
     spec:
       containers:
-      - image: onasserr/validating-kontroller:v1
+      - image: onasserr/validating-kontroller:v2
         name: validating-kontroller
         imagePullPolicy: Always
         args:
