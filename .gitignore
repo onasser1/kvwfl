@@ -1,3 +1,5 @@
 validating-kontroller
 certs/
 apiserver.local.config/
+manifests/secret.yaml
+manifests/webhookConfiguration.yaml
