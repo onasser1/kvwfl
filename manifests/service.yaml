@@ -6,7 +6,7 @@ metadata:
   name: validating-kontroller
 spec:
   ports:
-  - port: 80
+  - port: 443
     protocol: TCP
     targetPort: 8443
   selector:
